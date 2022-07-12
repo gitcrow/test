@@ -26,7 +26,7 @@ public class Main {
 	}
 	
 	private static int getPactorial(int data) {
-		if (data > 1) {
+		if (data > 10) {// 변경이 필요함 1 에서 10으로
 			return data*getPactorial(data -1);
 		}else{
 			return 1;

@@ -27,11 +27,8 @@ public class Main {
 	
 	private static int getPactorial(int data) {
 		if (data > 1) {
-			
 			return data*getPactorial(data -1);
-
 		}else{
-			
 			return 1;
 		}
 	}

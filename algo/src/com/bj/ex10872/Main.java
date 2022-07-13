@@ -26,7 +26,8 @@ public class Main {
 	}
 	
 	private static int getPactorial(int data) {
-		if (data > 10) {// 변경이 필요함 1 에서 10으로
+		if (data > 1) {
+			System.out.println(data);
 			return data*getPactorial(data -1);
 		}else{
 			return 1;

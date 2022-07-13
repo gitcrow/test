@@ -29,6 +29,7 @@ public class Main {
 		if (data > 1) {
 			System.out.println(data);
 			System.out.println("main111 브랜치에서 수정");
+			System.out.println("9102708 head로 돌아간뒤 수정");
 			return data*getPactorial(data -1);
 		}else{
 			return 1;

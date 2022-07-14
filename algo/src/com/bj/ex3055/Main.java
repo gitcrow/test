@@ -31,10 +31,12 @@ public class Main {
 		}
 		br.close();
 	
+
 		int rslt1 = 0;
 		int rslt2 = 0;
 		int rslt3 = 0;
 		int rslt4 = 0;
+
 		for (int i = 0; i < 2500; i++) {
 			runCnt++;
 			map1 = moving(map1,"ROW_LEFT");
@@ -50,7 +52,6 @@ public class Main {
 				}
 			}
 		}
-		
 		runCnt=0;
 		msg="";
 		for (int i = 0; i < 2500; i++) {
@@ -110,9 +111,9 @@ public class Main {
 		}
 		if(min==9999) {
 			System.out.println("KAKTUS"); 
+		}else{		
+			System.out.println(min);
 		}
-		System.out.println(min);
-		
 	}
 	
 	private static char[][] moving(char [][] map, String direction){

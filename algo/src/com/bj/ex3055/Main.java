@@ -16,65 +16,106 @@ public class Main {
 		ROWS = Integer.parseInt(input.substring(0, input.indexOf(" ")));
 		COLS = Integer.parseInt(input.substring(input.indexOf(" ")+1,input.length()));
 		
-		char [][] map = new char[ROWS][COLS];
+		char [][] map1 = new char[ROWS][COLS];
+		char [][] map2 = new char[ROWS][COLS];
+		char [][] map3 = new char[ROWS][COLS];
+		char [][] map4 = new char[ROWS][COLS];
 		for(int i = 0 ; i < ROWS ; i++) {
 			input = br.readLine();
 			for(int j = 0 ; j < COLS ; j++) {
-				map[i][j]= input.charAt(j);			
+				map1[i][j]= input.charAt(j);
+				map2[i][j]= input.charAt(j);
+				map3[i][j]= input.charAt(j);
+				map4[i][j]= input.charAt(j);
 			}
 		}
 		br.close();
 	
-		int[] dd = new int[2];
-		int[] ss = new int[2];
-		for(int i = 0 ; i < ROWS ; i++) {
-			for(int j = 0 ; j < COLS ; j++) {
-				if(map[i][j] =='D') {dd[0]=i;dd[1]=j;}
-				if(map[i][j] =='S') {ss[0]=i;ss[1]=j;}
-			}
-		
-		}
-		//int runTime = shotTime(dd,ss);
+		int rslt1 = 0;
+		int rslt2 = 0;
+		int rslt3 = 0;
+		int rslt4 = 0;
 		for (int i = 0; i < 2500; i++) {
 			runCnt++;
-			map = moving(map);
-			if(null == map) {
+			map1 = moving(map1,"ROW_LEFT");
+			if(null == map1) {
 				if("OVER"==msg) {
-					System.out.println("KAKTUS");
+					System.out.println("left : KAKTUS");
+					rslt1 = 0;
 					break;
 				}else {
-					System.out.println(runCnt);
+					System.out.println("left : "+ runCnt);
+					rslt1 = runCnt;
+					break;
 				}
 			}
 		}
-	}
-
-	private static int shotTime(int[] dd, int[] ss ) {
 		
-		int targetX = dd[0];
-		int targetY = dd[1];
-		int curX = ss[0];
-		int curY = ss[1];
-		int axisXLength = 0;
-		int axisYLength = 0; 
-		if (targetX >= curX) {
-			axisXLength = targetX - curX;
-		}else {
-			axisXLength = curX - targetX;
+		runCnt=0;
+		msg="";
+		for (int i = 0; i < 2500; i++) {
+			runCnt++;
+			map2 = moving(map2,"ROW_RIGHT");
+			if(null == map2) {
+				if("OVER"==msg) {
+					System.out.println("right : KAKTUS");
+					rslt2 = 0;
+					break;
+				}else {
+					System.out.println("right : "+ runCnt);
+					rslt2 = runCnt;
+					break;
+				}
+			}
 		}
-		if (targetY >= curY) {
-			axisYLength = targetY - curY;
-		}else {
-			axisYLength = curY - targetY;
+		runCnt=0;
+		msg="";
+		for (int i = 0; i < 2500; i++) {
+			runCnt++;
+			map3 = moving(map3,"COL_UP");
+			if(null == map3) {
+				if("OVER"==msg) {
+					System.out.println("up : KAKTUS");
+					rslt3 = 0;
+					break;
+				}else {
+					System.out.println("up : "+ runCnt);
+					rslt3 = runCnt;
+					break;
+				}
+			}
 		}
-		int shotLength = axisXLength + axisYLength;
+		runCnt=0;
+		msg="";
+		for (int i = 0; i < 2500; i++) {
+			runCnt++;
+			map4 = moving(map4,"COL_DOWN");
+			if(null == map4) {
+				if("OVER"==msg) {
+					System.out.println("down : KAKTUS");
+					rslt4 = 0;
+					break;
+				}else {
+					System.out.println("down : "+ runCnt);
+					rslt4 = runCnt;
+					break;
+				}
+			}
+		}
 		
-
-		return shotLength;
+		int[] rsltArr = {rslt1,rslt2,rslt3,rslt4};
+		int min = 9999;
+		for(int i=0; i<4 ; i++) {
+			if(rsltArr[i] != 0 && rsltArr[i] < min) min = rsltArr[i];
+		}
+		if(min==9999) {
+			System.out.println("KAKTUS"); 
+		}
+		System.out.println(min);
 		
 	}
 	
-	private static char[][] moving(char [][] map){
+	private static char[][] moving(char [][] map, String direction){
 		//현재 자신의 좌표를 던져서 1분뒤 map에 적용하는 함수
 		char [][] tmpMap = new char[ROWS][COLS];
 		int[]dd = new int[2];
@@ -107,26 +148,24 @@ public class Main {
 			msg = "SUCCESS";
 			return null;
 		}
-		//방향설정
-		
-		
+	
 		
 		//물이 옆칸으로 이동 가능한지 판단 후 이동
 		for(int i = 0 ; i < ROWS ; i++) {
 			for(int j = 0 ; j < COLS ; j++) {
 				if(map[i][j] =='*') {
 					//행이동(위,아래)
-					if(i > 0 && map[i-1][j] =='.') {
+					if(i > 0 && (map[i-1][j] =='.' || map[i-1][j] =='Z')) {
 						tmpMap[i-1][j] = '*';
 					}
-					if(i < ROWS-1 && map[i+1][j] =='.') {
+					if(i < ROWS-1 && (map[i+1][j] =='.' || map[i+1][j] =='Z')) {
 						tmpMap[i+1][j] = '*';
 					}
 					//행이동(좌,우)
-					if(j > 0 && map[i][j-1] =='.') {
+					if(j > 0 && (map[i][j-1] =='.' || map[i][j-1] =='Z')) {
 						tmpMap[i][j-1] = '*';
 					}
-					if(j < COLS-1 && map[i][j+1] =='.') {
+					if(j < COLS-1 && (map[i][j+1] =='.' || map[i][j+1] =='Z')) {
 						tmpMap[i][j+1] = '*';
 					}
 				}
@@ -135,47 +174,108 @@ public class Main {
 		//두더지가 옆칸으로 이동 가능한지 판단 후 이동
 		int mvCnt = 0;
 		boolean rChk = false;
+		boolean cChk = false;
 		for(int i = 0 ; i < ROWS ; i++) {
 			for(int j = 0 ; j < COLS ; j++) {				
 				if(tmpMap[i][j] =='S') {
-					if(dd[0]>i) {//두더지보다 집이 아래에 있나?
-						for(int k =i; k < ROWS ; k++) {
-							if(tmpMap[k][j] == '*' || tmpMap[k][j] == 'X') {
-								rChk = false;
-								break;
-							}else rChk = true;
-						}						
+					if("ROW".equals(direction.split("_")[0])) {
+						if(dd[0]>i) {//두더지보다 집이 아래에 있나? 아래에 장애물있으면 false
+							//for(int k =i; k < ROWS ; k++) {
+								if(tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] == '*' || tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] == 'X') {
+									rChk = false;
+								}else rChk = true;
+							//}						
+						}
+						if(dd[0]<i) {//두더지보다 집이 위에 있나? 위에 장애물있으면 false
+							//for(int k =0; k < i ; k++) {
+								if(tmpMap[(i-1)==0?0:i-1][j] == '*' || tmpMap[(i-1)==0?0:i-1][j] == 'X') {
+									rChk = false;
+								}else rChk = true;
+							//}						
+						}//이동우선순위 아래 위 (왼쪽 오른쪽) (오른쪽 왼쪽)
+						if(rChk ==true && dd[0]>i && tmpMap[i+1][j] =='.' && mvCnt==0) {//두더지보다 집이 아래에 있고 이동가능?
+							tmpMap[i+1][j] = 'S';
+							tmpMap[i][j] = 'Z';
+							mvCnt ++;
+						}
+						if(rChk ==true && dd[0]<i && tmpMap[i-1][j] =='.'&& mvCnt==0) {//두더지보다 집이 위에 있고 이동가능?
+							tmpMap[i-1][j] = 'S';
+							tmpMap[i][j] = 'Z';
+							mvCnt ++;
+						}
+						if("LEFT".equals(direction.split("_")[1]) && mvCnt==0 ) {
+							if(tmpMap[i][(j-1)==-1?0:j-1] =='.') {// 왼쪽 이동가능?
+								tmpMap[i][j-1] = 'S';
+								tmpMap[i][j] = 'Z';
+								mvCnt ++;
+							}
+							if(tmpMap[i][(j+1)==COLS?COLS-1:j+1] =='.'&& mvCnt==0) {// 오른쪽 이동가능?
+								tmpMap[i][j+1] = 'S';
+								tmpMap[i][j] = 'Z';
+								mvCnt ++;
+							}
+						}
+						if("RIGHT".equals(direction.split("_")[1]) && mvCnt==0) {
+							if(tmpMap[i][(j+1)==COLS?COLS-1:j+1] =='.') {//오른쪽 이동가능?
+								tmpMap[i][j+1] = 'S';
+								tmpMap[i][j] = 'Z';
+								mvCnt ++;
+							}
+							if(tmpMap[i][(j-1)==-1?0:j-1] =='.'&& mvCnt==0) {//왼쪽 이동가능?
+								tmpMap[i][j-1] = 'S';
+								tmpMap[i][j] = 'Z';
+								mvCnt ++;
+							}
+						}
 					}
-					if(dd[0]<i) {//두더지보다 집이 위에 있나?
-						for(int k =0; k < i ; k++) {
-							if(tmpMap[k][j] == '*' || tmpMap[k][j] == 'X') {
-								rChk = false;
-								break;
-							}else rChk = true;
-						}						
-					}
-					if(rChk ==true && dd[0]>i && map[i+1][j] =='.' && mvCnt==0) {//두더지보다 집이 아래에 있고 이동가능?
-						tmpMap[i+1][j] = 'S';
-						tmpMap[i][j] = '.';
-						mvCnt ++;
-					}
-					if(rChk ==true && dd[0]<i && map[i-1][j] =='.'&& mvCnt==0) {//두더지보다 집이 위에 있고 이동가능?
-						tmpMap[i-1][j] = 'S';
-						tmpMap[i][j] = '.';
-						mvCnt ++;
-					}
-					
-					if(dd[1]<j && map[i][j-1] =='.'&& mvCnt==0 ) {//두더지보다 집이 왼쪽에 있고 이동가능?
-						tmpMap[i][j-1] = 'S';
-						tmpMap[i][j] = '.';
-						mvCnt ++;
-					}else if(dd[1]<j && map[i][j-1] =='X'&& mvCnt==0 ) {
-						
-					}
-					if( dd[1]>j && map[i][j+1] =='.' && mvCnt==0) {//두더지보다 집이 오른쪽에 있고 이동가능?
-						tmpMap[i][j+1] = 'S';
-						tmpMap[i][j] = '.';
-						mvCnt ++;
+					if("COL".equals(direction.split("_")[0])) {
+						if(dd[1]>j) {
+							//for(int k =i; k < ROWS ; k++) {
+								if(tmpMap[i][(j+1)==COLS?COLS-1:j+1] == '*' || tmpMap[i][(j+1)==COLS?COLS-1:j+1] == 'X') {
+									cChk = false;
+								}else cChk = true;
+							//}						
+						}
+						if(dd[1]<j) {
+							//for(int k =0; k < i ; k++) {
+								if(tmpMap[i][(j-1)==0?0:j-1] == '*' || tmpMap[i][(j-1)==0?0:j-1] == 'X') {
+									cChk = false;
+								}else cChk = true;
+							//}						
+						}
+						if(cChk ==true && dd[1]>j && tmpMap[i][j+1] =='.' && mvCnt==0) {//두더지보다 집이 아래에 있고 이동가능?
+							tmpMap[i][j+1] = 'S';
+							tmpMap[i][j] = 'Z';
+							mvCnt ++;
+						}
+						if(cChk ==true && dd[1]<j && tmpMap[i][j-1] =='.'&& mvCnt==0) {//두더지보다 집이 위에 있고 이동가능?
+							tmpMap[i][j-1] = 'S';
+							tmpMap[i][j] = 'Z';
+							mvCnt ++;
+						}
+						if("UP".equals(direction.split("_")[1]) && mvCnt==0) {
+							if(tmpMap[(i-1)==-1?0:i-1][j] =='.') {
+								tmpMap[i-1][j] = 'S';
+								tmpMap[i][j] = 'Z';
+								mvCnt ++;
+							}
+							if(tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] =='.'&& mvCnt==0) {
+								tmpMap[i+1][j] = 'S';
+								tmpMap[i][j] = 'Z';
+								mvCnt ++;
+							}
+						}else if("DOWN".equals(direction.split("_")[1]) && mvCnt==0) {
+							if(tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] =='.') {
+								tmpMap[i+1][j] = 'S';
+								tmpMap[i][j] = 'Z';
+								mvCnt ++;
+							}
+							if(tmpMap[(i-1)==-1?0:i-1][j] =='.'&& mvCnt==0) {
+								tmpMap[i-1][j] = 'S';
+								tmpMap[i][j] = 'Z';
+								mvCnt ++;
+							}
+						}
 					}
 
 				}
@@ -188,8 +288,7 @@ public class Main {
 		
 		printMap(tmpMap);
 		return tmpMap;
-	}
-	
+	}	
 	private static void printMap(char [][] map) {
 		StringBuilder sb = new StringBuilder();
 		for(int i = 0 ; i < ROWS ; i++) {
@@ -200,4 +299,5 @@ public class Main {
 		}
 		System.out.println(sb.toString());
 	}
+	
 }

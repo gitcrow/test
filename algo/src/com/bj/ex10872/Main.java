@@ -28,7 +28,8 @@ public class Main {
 	private static int getPactorial(int data) {
 		if (data > 1) {
 			System.out.println(data);
-			System.out.println("master 브랜치에서 수정");
+			System.out.println("main111 브랜치에서 수정");
+			System.out.println("9102708 head로 돌아간뒤 수정");
 			return data*getPactorial(data -1);
 		}else{
 			return 1;

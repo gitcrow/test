@@ -34,7 +34,6 @@ public class Main {
 			}
 		
 		}
-		//int runTime = shotTime(dd,ss);
 		for (int i = 0; i < 2500; i++) {
 			runCnt++;
 			map = moving(map);
@@ -49,30 +48,6 @@ public class Main {
 		}
 	}
 
-	private static int shotTime(int[] dd, int[] ss ) {
-		
-		int targetX = dd[0];
-		int targetY = dd[1];
-		int curX = ss[0];
-		int curY = ss[1];
-		int axisXLength = 0;
-		int axisYLength = 0; 
-		if (targetX >= curX) {
-			axisXLength = targetX - curX;
-		}else {
-			axisXLength = curX - targetX;
-		}
-		if (targetY >= curY) {
-			axisYLength = targetY - curY;
-		}else {
-			axisYLength = curY - targetY;
-		}
-		int shotLength = axisXLength + axisYLength;
-		
-
-		return shotLength;
-		
-	}
 	
 	private static char[][] moving(char [][] map){
 		//현재 자신의 좌표를 던져서 1분뒤 map에 적용하는 함수

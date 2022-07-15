@@ -156,18 +156,29 @@ public class Main {
 			for(int j = 0 ; j < COLS ; j++) {
 				if(map[i][j] =='*') {
 					//행이동(위,아래)
-					if(i > 0 && (map[i-1][j] =='.' || map[i-1][j] =='Z')) {
-						tmpMap[i-1][j] = '*';
+					if(i > 0 && (map[i-1][j] !='X' && map[i-1][j] !='D')) {
+						if(map[i-1][j] =='S') {
+							tmpMap[i-1][j] = 's';
+						}else tmpMap[i-1][j] = '*';
 					}
-					if(i < ROWS-1 && (map[i+1][j] =='.' || map[i+1][j] =='Z')) {
-						tmpMap[i+1][j] = '*';
+					if(i < ROWS-1 && (map[i+1][j] !='X' && map[i+1][j] !='D')) {
+						if(map[i+1][j] =='S') {
+							tmpMap[i+1][j] = 's';
+						}else
+							tmpMap[i+1][j] = '*';
 					}
 					//행이동(좌,우)
-					if(j > 0 && (map[i][j-1] =='.' || map[i][j-1] =='Z')) {
-						tmpMap[i][j-1] = '*';
+					if(j > 0 && (map[i][j-1] !='X' && map[i][j-1] !='D')) {
+						if(map[i][j-1] =='S') {
+							tmpMap[i][j-1] = 's';
+						}else 
+							tmpMap[i][j-1] = '*';
 					}
-					if(j < COLS-1 && (map[i][j+1] =='.' || map[i][j+1] =='Z')) {
-						tmpMap[i][j+1] = '*';
+					if(j < COLS-1 && (map[i][j+1] !='X' && map[i][j+1] !='D')) {
+						if(map[i][j+1] =='S') {
+							tmpMap[i][j+1] = 's';
+						}else 
+							tmpMap[i][j+1] = '*';
 					}
 				}
 			}
@@ -178,102 +189,138 @@ public class Main {
 		boolean cChk = false;
 		for(int i = 0 ; i < ROWS ; i++) {
 			for(int j = 0 ; j < COLS ; j++) {				
-				if(tmpMap[i][j] =='S') {
+				if(tmpMap[i][j] =='S' || tmpMap[i][j] =='s') {
 					if("ROW".equals(direction.split("_")[0])) {
-						if(dd[0]>i) {//두더지보다 집이 아래에 있나? 아래에 장애물있으면 false
-							//for(int k =i; k < ROWS ; k++) {
+						if(dd[0]>=i) {//두더지보다 집이 아래에 있나? 아래에 장애물있으면 false
 								if(tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] == '*' || tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] == 'X') {
 									rChk = false;
 								}else rChk = true;
-							//}						
 						}
-						if(dd[0]<i) {//두더지보다 집이 위에 있나? 위에 장애물있으면 false
-							//for(int k =0; k < i ; k++) {
+						if(dd[0]<=i && i!=0) {//두더지보다 집이 위에 있나? 위에 장애물있으면 false
 								if(tmpMap[(i-1)==0?0:i-1][j] == '*' || tmpMap[(i-1)==0?0:i-1][j] == 'X') {
 									rChk = false;
 								}else rChk = true;
-							//}						
 						}//이동우선순위 아래 위 (왼쪽 오른쪽) (오른쪽 왼쪽)
-						if(rChk ==true && dd[0]>i && tmpMap[i+1][j] =='.' && mvCnt==0) {//두더지보다 집이 아래에 있고 이동가능?
-							tmpMap[i+1][j] = 'S';
-							tmpMap[i][j] = 'Z';
-							mvCnt ++;
+						if(rChk ==true && dd[0]>=i  && mvCnt==0) {//두더지보다 집이 아래에 있고 이동가능?
+							if(tmpMap[i+1][j] =='.') {
+								tmpMap[i+1][j] = 'S';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
+								mvCnt ++;
+							}
+							if(tmpMap[i+1][j] =='Z' && i > 0 && tmpMap[(i-1)==0?0:i-1][j] != '*' && tmpMap[(i-1)==0?0:i-1][j] != 'X') {
+								tmpMap[i-1][j] = 'S';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
+								mvCnt ++;
+							}
 						}
-						if(rChk ==true && dd[0]<i && tmpMap[i-1][j] =='.'&& mvCnt==0) {//두더지보다 집이 위에 있고 이동가능?
-							tmpMap[i-1][j] = 'S';
-							tmpMap[i][j] = 'Z';
-							mvCnt ++;
+						if(rChk ==true && dd[0]<=i && mvCnt==0 && i!=0) {//두더지보다 집이 위에 있고 이동가능?
+							if(tmpMap[i-1][j] =='.') {
+								tmpMap[i-1][j] = 'S';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
+								mvCnt ++;
+							}
+							if(tmpMap[i-1][j] =='Z' && tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] != '*' && tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] != 'X') {
+								tmpMap[i+1][j] = 'S';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
+								mvCnt ++;
+							}
 						}
 						if("LEFT".equals(direction.split("_")[1]) && mvCnt==0 ) {
 							if(tmpMap[i][(j-1)==-1?0:j-1] =='.') {// 왼쪽 이동가능?
 								tmpMap[i][j-1] = 'S';
-								tmpMap[i][j] = 'Z';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
 								mvCnt ++;
 							}
 							if(tmpMap[i][(j+1)==COLS?COLS-1:j+1] =='.'&& mvCnt==0) {// 오른쪽 이동가능?
 								tmpMap[i][j+1] = 'S';
-								tmpMap[i][j] = 'Z';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
 								mvCnt ++;
 							}
 						}
 						if("RIGHT".equals(direction.split("_")[1]) && mvCnt==0) {
 							if(tmpMap[i][(j+1)==COLS?COLS-1:j+1] =='.') {//오른쪽 이동가능?
 								tmpMap[i][j+1] = 'S';
-								tmpMap[i][j] = 'Z';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
 								mvCnt ++;
 							}
 							if(tmpMap[i][(j-1)==-1?0:j-1] =='.'&& mvCnt==0) {//왼쪽 이동가능?
 								tmpMap[i][j-1] = 'S';
-								tmpMap[i][j] = 'Z';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
 								mvCnt ++;
 							}
 						}
 					}
 					if("COL".equals(direction.split("_")[0])) {
-						if(dd[1]>j) {
-							//for(int k =i; k < ROWS ; k++) {
+						if(dd[1]>=j) {
 								if(tmpMap[i][(j+1)==COLS?COLS-1:j+1] == '*' || tmpMap[i][(j+1)==COLS?COLS-1:j+1] == 'X') {
 									cChk = false;
 								}else cChk = true;
-							//}						
 						}
-						if(dd[1]<j) {
-							//for(int k =0; k < i ; k++) {
+						if(dd[1]<=j && j!=0) {
 								if(tmpMap[i][(j-1)==0?0:j-1] == '*' || tmpMap[i][(j-1)==0?0:j-1] == 'X') {
 									cChk = false;
 								}else cChk = true;
-							//}						
 						}
-						if(cChk ==true && dd[1]>j && tmpMap[i][j+1] =='.' && mvCnt==0) {//두더지보다 집이 아래에 있고 이동가능?
-							tmpMap[i][j+1] = 'S';
-							tmpMap[i][j] = 'Z';
-							mvCnt ++;
+						if(cChk ==true && dd[1]>=j  && mvCnt==0) {//두더지보다 집이 아래에 있고 이동가능?
+							if(tmpMap[i][j+1] =='.') {
+								tmpMap[i][j+1] = 'S';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
+								mvCnt ++;
+							}
+							if(tmpMap[i][j+1] =='Z' && j > 0 && tmpMap[i][(j-1)==0?0:j-1] != '*' && tmpMap[i][(j-1)==0?0:j-1] != 'X') {
+								tmpMap[i][j-1] = 'S';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
+								mvCnt ++;
+							}
 						}
-						if(cChk ==true && dd[1]<j && tmpMap[i][j-1] =='.'&& mvCnt==0) {//두더지보다 집이 위에 있고 이동가능?
-							tmpMap[i][j-1] = 'S';
-							tmpMap[i][j] = 'Z';
-							mvCnt ++;
+						if(cChk ==true && dd[1]<=j && mvCnt==0 && j!=0) {//두더지보다 집이 위에 있고 이동가능?
+							if(tmpMap[i][j-1] =='.') {
+								tmpMap[i][j-1] = 'S';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
+								mvCnt ++;
+							}
+							if(tmpMap[i][j-1] =='Z' && tmpMap[i][(j+1)==COLS?COLS-1:j+1] != '*' && tmpMap[i][(j+1)==COLS?COLS-1:j+1] != 'X') {
+								tmpMap[i][j+1] = 'S';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
+								mvCnt ++;
+							}
 						}
 						if("UP".equals(direction.split("_")[1]) && mvCnt==0) {
 							if(tmpMap[(i-1)==-1?0:i-1][j] =='.') {
 								tmpMap[i-1][j] = 'S';
-								tmpMap[i][j] = 'Z';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
 								mvCnt ++;
 							}
 							if(tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] =='.'&& mvCnt==0) {
 								tmpMap[i+1][j] = 'S';
-								tmpMap[i][j] = 'Z';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
 								mvCnt ++;
 							}
 						}else if("DOWN".equals(direction.split("_")[1]) && mvCnt==0) {
 							if(tmpMap[(i+1)==ROWS?ROWS-1:i+1][j] =='.') {
 								tmpMap[i+1][j] = 'S';
-								tmpMap[i][j] = 'Z';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
 								mvCnt ++;
 							}
 							if(tmpMap[(i-1)==-1?0:i-1][j] =='.'&& mvCnt==0) {
 								tmpMap[i-1][j] = 'S';
-								tmpMap[i][j] = 'Z';
+								if(tmpMap[i][j]!='s') tmpMap[i][j] = 'Z';
+								else tmpMap[i][j] = '*';
 								mvCnt ++;
 							}
 						}
